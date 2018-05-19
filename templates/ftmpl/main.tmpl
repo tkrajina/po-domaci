@@ -1,0 +1,13 @@
+!#extends page_base
+
+!#arg template Template
+
+!#sub body
+
+bu
+
+<ul>
+!for _, letter := range template.Letters
+    <li/> <a href="dictionary_{{s letter.Letter }}.html">{{s letter.Letter }}</a> ({{d len(letter.Words)}} riječi)
+!end
+</ul>

@@ -1,0 +1,50 @@
+\documentclass[11pt,twoside,a5paper]{report}
+\raggedbottom
+
+\linespread{1.0}
+
+\title{Po domaći}
+
+\usepackage[pdftex]{color}
+\usepackage[croatian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{makeidx}
+\usepackage{color}
+\usepackage[pdfborder=1]{hyperref}
+
+\addtolength{\hoffset}{-1cm}
+\addtolength{\voffset}{-1cm}
+\addtolength{\textwidth}{2cm}
+\addtolength{\textheight}{1cm}
+
+\pagestyle{empty}
+
+% ----------------------------------------------------------------------------------------------------
+
+\begin{document}
+
+Po domaći
+
+{{range $letter := .Letters}}
+
+\pagebreak
+
+{{ $letter.Letter }}
+
+\begin{description}
+{{range $word := $letter.Words}}
+  \item[{{ .Back }}] {{ .Front }}
+  {{ if or .Varijante .Primjer }}
+      \begin{small}
+      \begin{description}
+    {{ if .Varijante }} \item[sinonim] {{ .Varijante }}{{ end }}
+    {{ if .Primjer }} \item[npr] {{ .Primjer }}{{ end }}
+      \end{description}
+      \end{small}
+  {{ end }}
+{{ end }}
+\end{description}
+{{ end }}
+
+\end{document}
+

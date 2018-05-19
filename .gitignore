@@ -1,0 +1,14 @@
+.idea/*
+*.curl
+*.sh
+*.tar
+tags
+anki-tts
+.DS_Store
+tmp*
+
+# Generated files
+output/
+
+# Binary artifact:
+anki2dict

@@ -1,0 +1,13 @@
+!#extends page_base
+
+!#arg letter TemplateLetter
+
+!#sub body
+
+<h1>{{s letter.Letter }}</h1>
+
+<ul>
+!for _, word := range letter.Words
+    <li/> <a href="dictionary_word_{{s word.Back }}.html">{{s word.Back }}</a>
+!end
+</ul>

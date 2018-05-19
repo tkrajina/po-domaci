@@ -1,0 +1,9 @@
+# Po domaći
+
+{{range $letter := .Letters}}
+## {{ $letter.Letter }}
+{{range $word := $letter.Words}}
+* **{{ .Back }}**: {{ .Front }}{{ if .Varijante }}
+  * *sinonimi*: {{ .Varijante }}{{ end }}{{ if .Primjer }}
+  * *npr.* {{ .Primjer }}{{ end }}{{end}}
+{{end}}
