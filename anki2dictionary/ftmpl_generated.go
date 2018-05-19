@@ -137,7 +137,26 @@ func TMPLERRword(word TemplateWord) (string, error) {
 <body>
 `)
 	_w(`
-Bu
+<ul>
+    <li/> Front: `)
+	_w(fmt.Sprintf(`%s`, _escape(word.Front)))
+	_w(`
+    <li/> Back: `)
+	_w(fmt.Sprintf(`%s`, _escape(word.Back)))
+	_w(`
+    <li/> Primjer: `)
+	_w(fmt.Sprintf(`%s`, _escape(word.Primjer)))
+	_w(`
+    <li/> Varijante: `)
+	_w(fmt.Sprintf(`%s`, _escape(word.Varijante)))
+	_w(`
+    <li/> Sinonimi: `)
+	_w(fmt.Sprintf(`%s`, _escape(word.Sinonimi)))
+	_w(`
+    <li/> Vezano: `)
+	_w(fmt.Sprintf(`%s`, _escape(word.Vezano)))
+	_w(`
+</ul>
 `)
 	_w(`</body>
 </html>
