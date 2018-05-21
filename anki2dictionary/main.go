@@ -20,7 +20,7 @@ func main() {
 		usageAndExitf(err.Error())
 	}
 
-	fmt.Println(cfg.DatabaseFilename)
+	fmt.Println("Database filename:", cfg.DatabaseFilename)
 
 	db, err := anki.OpenOriginalDB(cfg.DatabaseFilename)
 	if err != nil {
