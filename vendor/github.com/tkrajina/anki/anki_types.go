@@ -41,7 +41,7 @@ type Config struct {
 	NewBury       bool            `json:"newBury"`
 	NewSpread     int             `json:"newSpread"`
 	DueCounts     bool            `json:"dueCounts"`
-	CurrentModel  ID              `json:"curModel,string"`
+	CurrentModel  ID              `json:"curModel"`
 	CollapseTime  int             `json:"collapseTime"`
 }
 
