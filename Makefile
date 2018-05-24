@@ -1,5 +1,6 @@
-build: ftmpl
+build: clean ftmpl
 	go build -v -i -o anki2dict ./...
+	./anki2dict
 test: ftmpl
 	go test ./...
 ftmpl:
@@ -7,5 +8,3 @@ ftmpl:
 clean:
 	rm -Rf output
 	mkdir -p output
-run: clean build
-	./anki2dict
