@@ -3,11 +3,15 @@ package main
 import (
 	"fmt"
 	"html"
+	"io"
 	"io/ioutil"
 	"os"
+	"path"
 
 	"github.com/tkrajina/anki"
 )
+
+const outputDir = "output"
 
 func usageAndExitf(msg string, params ...interface{}) {
 	fmt.Fprintf(os.Stderr, msg+"\n", params...)
@@ -56,7 +60,7 @@ func main() {
 		}
 
 		for filename, contents := range out {
-			if err := ioutil.WriteFile(fmt.Sprintf("output/%s", filename), []byte(contents), os.FileMode(0770)); err != nil {
+			if err := ioutil.WriteFile(fmt.Sprintf("%s/%s", outputDir, filename), []byte(contents), os.FileMode(0770)); err != nil {
 				usageAndExitf(err.Error())
 			}
 
@@ -128,10 +132,12 @@ func loadDictionary(db *anki.DB, cfg Config) (*Dictionary, error) {
 
 			//fmt.Println("*", model.Name, cardType)
 			if model.Name == cfg.Type {
-				processNote(&dictionary, note, *model)
+				processNote(&dictionary, note, *model, cfg)
 			} else {
 				fmt.Printf("Note %#v in deck %s but not of type %s\n", note.FieldValues, cfg.DeckName, cfg.Type)
 			}
+
+			// TODO: Export
 		}
 	}
 
@@ -147,12 +153,27 @@ func loadDictionary(db *anki.DB, cfg Config) (*Dictionary, error) {
 	return &dictionary, nil
 }
 
-func processNote(dictionary *Dictionary, note anki.Note, model anki.Model) {
+func processNote(dictionary *Dictionary, note anki.Note, model anki.Model, cfg Config) {
 	fields := make([]string, len(model.Fields))
 	values := make([]string, len(model.Fields))
 	for n, f := range model.Fields {
 		fields[n] = f.Name
-		values[n] = html.UnescapeString(string(note.FieldValues[n]))
+		val, audioFile := valueAndAudioFile(html.UnescapeString(string(note.FieldValues[n])))
+		if audioFile != "" {
+			dir, _ := path.Split(cfg.DatabaseFilename)
+			src, err := os.Open(path.Join(dir, "collection.media", audioFile))
+			if err != nil {
+				panic(err)
+			}
+			dst, err := os.Create(path.Join(outputDir, audioFile))
+			if err != nil {
+				panic(err)
+			}
+			if _, err := io.Copy(dst, src); err != nil {
+				panic(err)
+			}
+		}
+		values[n] = val
 	}
 
 	dictionary.Columns = fields

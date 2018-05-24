@@ -16,6 +16,19 @@ type Config struct {
 	Type             string `json:"type"`
 }
 
+var audioRegexp = regexp.MustCompile(`\[sound:.*?\]`)
+
+func valueAndAudioFile(val string) (string, string) {
+	var audioFile string
+	val = audioRegexp.ReplaceAllStringFunc(val, func(s string) string {
+		s = strings.Replace(strings.Trim(s, "[]"), "sound:", "", -1)
+		audioFile = s
+		return ""
+	})
+	val = strings.TrimSpace(val)
+	return val, audioFile
+}
+
 // Dictionary is used to store all the data in a pretty printed JSON file
 type Dictionary struct {
 	Columns    []string   `json:"columns"`
@@ -58,7 +71,7 @@ func (d *Dictionary) RowToMap(row []string) TemplateWord {
 		}
 		for columnNo, column := range d.Columns {
 			if column == fld {
-				val, audioFile := d.valueAndAudioFile(row[columnNo])
+				val, audioFile := valueAndAudioFile(row[columnNo])
 				if audioFile != "" {
 					if rowMap.AudioFiles == nil {
 						rowMap.AudioFiles = make([]string, 0, 1)
@@ -72,19 +85,6 @@ func (d *Dictionary) RowToMap(row []string) TemplateWord {
 		}
 	}
 	return rowMap
-}
-
-var audioRegexp = regexp.MustCompile(`\[sound:.*?\]`)
-
-func (d *Dictionary) valueAndAudioFile(val string) (string, string) {
-	var audioFile string
-	val = audioRegexp.ReplaceAllStringFunc(val, func(s string) string {
-		s = strings.Replace(strings.Trim(s, "[]"), "sound:", "", -1)
-		audioFile = s
-		return ""
-	})
-	val = strings.TrimSpace(val)
-	return val, audioFile
 }
 
 func (d *Dictionary) Len() int      { return len(d.Rows) }
