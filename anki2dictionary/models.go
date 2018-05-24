@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -57,7 +58,13 @@ func (d *Dictionary) RowToMap(row []string) TemplateWord {
 		}
 		for columnNo, column := range d.Columns {
 			if column == fld {
-				val := row[columnNo]
+				val, audioFile := d.valueAndAudioFile(row[columnNo])
+				if audioFile != "" {
+					if rowMap.AudioFiles == nil {
+						rowMap.AudioFiles = make([]string, 0, 1)
+					}
+					rowMap.AudioFiles = append(rowMap.AudioFiles, audioFile)
+				}
 				if err := field.Set(val); err != nil {
 					fmt.Fprintf(os.Stderr, fmt.Sprintf("Error setting field %s", err.Error()))
 				}
@@ -65,6 +72,19 @@ func (d *Dictionary) RowToMap(row []string) TemplateWord {
 		}
 	}
 	return rowMap
+}
+
+var audioRegexp = regexp.MustCompile(`\[sound:.*?\]`)
+
+func (d *Dictionary) valueAndAudioFile(val string) (string, string) {
+	var audioFile string
+	val = audioRegexp.ReplaceAllStringFunc(val, func(s string) string {
+		s = strings.Replace(strings.Trim(s, "[]"), "sound:", "", -1)
+		audioFile = s
+		return ""
+	})
+	val = strings.TrimSpace(val)
+	return val, audioFile
 }
 
 func (d *Dictionary) Len() int      { return len(d.Rows) }
@@ -92,6 +112,8 @@ type TemplateWord struct {
 	Varijante string `field:"Varijante"`
 	Sinonimi  string `field:"Sinonimi"`
 	Vezano    string `field:"Vezano`
+
+	AudioFiles []string `field:"AudioFiles"`
 }
 
 func (tw TemplateWord) sortField() string { return tw.Back }

@@ -88,8 +88,10 @@ func exportToLatex(dict Dictionary) (map[string]string, error) {
 				if err != nil {
 					return nil, err
 				}
-				if err := field.Set(croatianLatexChars(val.(string))); err != nil {
-					return nil, err
+				if s, is := val.(string); is {
+					if err := field.Set(croatianLatexChars(s)); err != nil {
+						return nil, err
+					}
 				}
 			}
 		}
