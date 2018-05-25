@@ -158,7 +158,8 @@ func processNote(dictionary *Dictionary, note anki.Note, model anki.Model, cfg C
 	values := make([]string, len(model.Fields))
 	for n, f := range model.Fields {
 		fields[n] = f.Name
-		val, audioFile := valueAndAudioFile(html.UnescapeString(string(note.FieldValues[n])))
+		val := html.UnescapeString(string(note.FieldValues[n]))
+		_, audioFile := valueAndAudioFile(val)
 		if audioFile != "" {
 			dir, _ := path.Split(cfg.DatabaseFilename)
 			src, err := os.Open(path.Join(dir, "collection.media", audioFile))

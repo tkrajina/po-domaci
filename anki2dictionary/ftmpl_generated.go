@@ -157,7 +157,18 @@ func TMPLERRword(word TemplateWord) (string, error) {
 	_w(fmt.Sprintf(`%s`, _escape(word.Vezano)))
 	_w(`
 </ul>
+
 `)
+	for _, audioFile := range word.AudioFiles {
+		_w(`<audio controls>
+    <source src="`)
+		_w(fmt.Sprintf(`%s`, _escape(audioFile)))
+		_w(`" type="audio/mpeg">
+    Your browser does not support the audio tag.
+</audio>
+
+`)
+	}
 	_w(`</body>
 </html>
 `)
